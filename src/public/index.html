@@ -819,45 +819,45 @@
 									<div class="row">
 											<div class="col-md-4">
 												<label for="name">Full Name *</label>
-												<input id="name" required type="text" value="" class="form-control" name="contact[name][required]">
+												<input id="name" required type="text" value="" class="form-control" name="contact[fullname]" [required]>
 											</div>
 											<div class="col-md-4">
 												<label for="email">E-mail Address *</label>
-												<input id="email" required type="email" value="" class="form-control" name="contact[email][required]">
+												<input id="email" required type="email" value="" class="form-control" name="contact[email]" [required]>
 											</div>
 											<div class="col-md-4">
 												<label for="phone">Phone</label>
-												<input id="phone" type="text" value="" class="form-control" name="contact[phone]">
+												<input id="phone" type="text" value="" class="form-control" name="contact[phone]" [required]>
 											</div>
 									</div>
                                     <div class="row">
                                         <div class="col-md-6">
                                             <label for="company_name">Company Name *</label>
-                                            <input id="name" required type="text" value="" class="form-control" name="contact[name][required]">
+                                            <input id="name" required type="text" value="" class="form-control" name="contact[company_name]" [required]>
                                         </div>
                                         <div class="col-md-6">
                                             <label for="project_name">Project Name *</label>
-                                            <input id="project_name" required type="text" value="" class="form-control" name="contact[name][required]">
+                                            <input id="project_name" required type="text" value="" class="form-control" name="contact[project_name]" [required]>
                                         </div>
                                     </div>
 									<div class="row">
 											<div class="col-md-6">
                                                 <label for="project_description">Project Description *</label>
-												<input id="project_description" required type="text" value="" class="form-control" name="contact[subject][required]">
+												<input id="project_description" required type="text" value="" class="form-control" name="contact[project_desc]" [required]>
 											</div>
 											<div class="col-md-6">
 												<label for="department">Department</label>
-												<select id="department" class="form-control pointer" name="contact[department]">
+												<select id="department" class="form-control pointer" name="contact[department]" [required]>
 													<option value="">--- Select ---</option>
-													<option value="Marketing">Commercial</option>
-													<option value="Webdesign">Residential</option>
+													<option value="commercial">Commercial</option>
+													<option value="residential">Residential</option>
 												</select>
 											</div>
 									</div>
 									<div class="row">
 											<div class="col-md-12">
 												<label for="message">Message *</label>
-												<textarea id="message" required maxlength="10000" rows="8" class="form-control" name="contact[message]"></textarea>
+												<textarea id="message" required maxlength="10000" rows="8" class="form-control" name="contact[message]" [required]></textarea>
 											</div>
 									</div>
 									<div class="row">
@@ -1036,7 +1036,6 @@
 		<script>var plugin_path = 'assets/plugins/';</script>
 		<script src="assets/plugins/jquery/jquery-3.3.1.min.js"></script>
 		<script src="assets/js/scripts.js"></script>
-		
 
 		<!-- REVOLUTION SLIDER -->
 		<script src="assets/plugins/slider.revolution/js/jquery.themepunch.tools.min.js"></script>

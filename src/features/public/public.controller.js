@@ -1,25 +1,51 @@
 const Data = require('../../shared/resources/data');
+const Contact = require("../../shared/db/mongodb/schemas/contact.schema");
 
-const contactUs = (req,res) => {
-  const firstName = req.body.first_name;
-  const lastName = req.body.last_name;
-  const message = req.body.message;
+const contactUs = async (req, res) => {
+	try {
+		const {
+			fullname,
+			email,
+			phone,
+			department,
+			company_name,
+			project_name,
+			project_desc,
+			message,
+		} = req.body;
+		console.log(req.body);
 
-  const responseMessage = `Message received from ${firstName} ${lastName}`;
+		if (!fullname ||!email ||!phone ||!company_name ||!department ||!project_name ||!project_desc ||!message)
+			return res.status(400).json({ error: "Please fill all fields" });
 
-  console.log(responseMessage);
-  res.send(responseMessage);
+const newContact = new Contact({
+	fullname,
+	email,
+	phone,
+	company_name,
+	project_name,
+	project_desc,
+	department,
+	message, // Include the message field
+});
+
+
+		await newContact.save();
+		res.status(201).json({ success: true, data: newContact });
+	} catch (error) {
+		console.log(error);
+		return res.status(500).json({ error: "Internal Server Error" });
+	}
 };
 
+
 const calcQuote = (req,res) => {
-	// define constants
 	const buildingType = req.params.buildingType;
 
 	const apts = +req.query.apts;
 	const floors = +req.query.floors;
 	const tier = req.query.tier.toLowerCase();
 
-	// validate request object
 	if (!buildingType) {
 		return res.status(400).send(`Error: Invalid Building Type`);
 	}
@@ -47,11 +73,8 @@ const calcQuote = (req,res) => {
 		return;
 	}
 
-	// business logic
 	const numElevators = calcResidentialElev(floors, apts);
 	const totalCost = calcInstallFee(numElevators, tier);
-
-	// format response
 	res.send({
 		elevators_required: numElevators,
 		cost: totalCost,
@@ -78,4 +101,4 @@ const calcInstallFee = (numElvs, tier) => {
 	return total;
 };
 
-module.exports = {contactUs,calcQuote};
+module.exports = { contactUs, calcQuote };
