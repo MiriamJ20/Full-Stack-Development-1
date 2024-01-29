@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 
-const contactUsSchema = new mongoose.Schema(
-	{
+const contactUsSchema = new mongoose.Schema({
 		fullname: {
 			type: String,
 			required: true,
@@ -37,8 +36,7 @@ const contactUsSchema = new mongoose.Schema(
 		file: {
 			type: String,
 		},
-	},
-	{ timestamps: true }
+	}, { timestamps: true }
 );
 
 module.exports = mongoose.model("Contact", contactUsSchema);

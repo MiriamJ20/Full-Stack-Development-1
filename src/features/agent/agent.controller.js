@@ -46,10 +46,4 @@ const deleteAgent = asyncWrapper( async (req,res) => {
   res.status(201).json({ msg:'Agent deleted', agent });  
 });
 
-module.exports = {
-  createAgent,
-  getAllAgents,
-  getAgentsByRegion,
-  updateAgentInfo,
-  deleteAgent
-};
+module.exports = { createAgent, getAllAgents, getAgentsByRegion, updateAgentInfo, deleteAgent };

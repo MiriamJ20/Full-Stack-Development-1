@@ -9,4 +9,4 @@ const registerRegionRoutes = (app) => {
   app.get('/all-stars', RegionController.getAllStars);
 }
 
-module.exports = {registerRegionRoutes};
+module.exports = { registerRegionRoutes };

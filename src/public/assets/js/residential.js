@@ -1,5 +1,7 @@
 const url = "http://localhost:3004/agents";
 let tableBody = "";
+let agentData = [];
+
 const updateTable = (region) => {
 	fetch(`${url}?region=${region}`)
 		.then((response) => response.json())
@@ -39,6 +41,20 @@ const updateTable = (region) => {
 		.catch((error) => {
 			console.error("Error fetching data:", error);
 		});
+};
+
+const sortTable = (column) => {
+	const isNumeric = column === "rating" || column === "fee";
+
+	agentData.sort((a, b) => {
+		if (isNumeric) {
+			return a[column] - b[column];
+		} else {
+			return a[column].localeCompare(b[column]);
+		}
+	});
+
+	updateTable("all");
 };
 
 const filterTableByRegion = () => {

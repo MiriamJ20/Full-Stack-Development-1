@@ -9,8 +9,8 @@ const createRegion = asyncWrapper( async (req,res) => {
 });
 
 const getRegion = asyncWrapper( async (req,res) => {
-    const regionSelected = req.query.region
-    const region = await Region.find({ region: regionSelected.toLowerCase() });
+    const regionSelected = req.query.region.toLowerCase();
+    const region = await Region.find({ region: regionSelected });
     if (!region.length) {
         return res.status(404).json({ msg:`No region with name ${regionSelected}` })    
     }
@@ -18,22 +18,21 @@ const getRegion = asyncWrapper( async (req,res) => {
 });
 
 
-const getAllStars = asyncWrapper( async (req, res) => {
-    const north_region = await Region.find({ region: 'north' })
-    const south_region = await Region.find({ region: 'south' })
-    const east_region = await Region.find({ region: 'east' })
-    res.status(200).json({ 
+const getAllStars = asyncWrapper(async (req, res) => {
+    const north_region = await Region.find({ region: 'north' });
+    const south_region = await Region.find({ region: 'south' });
+    const east_region = await Region.find({ region: 'east' });
+    const west_region = await Region.find({ region: "west" });
+    res.status(200).json({
         region1: 'north',
         topAgent_North: north_region[0].top_agents[0],
         region2: 'east',
         topAgent_East: east_region[0].top_agents[0],
         region3: 'south',
-        topAgent_South: south_region[0].top_agents[0]
-    })
-})
+        topAgent_South: south_region[0].top_agents[0],
+        region4: 'west',
+        topAgents_West: west_region[0].top_agents[0]
+    });
+});
 
-module.exports = {
-  createRegion,
-  getRegion,
-  getAllStars,
-};
+module.exports = { createRegion, getRegion, getAllStars };

@@ -1,7 +1,8 @@
 const Data = require('../../shared/resources/data');
+const asyncWrapper = require("../../shared/util/base-utils");
 const Contact = require("../../shared/db/mongodb/schemas/contact.schema");
 
-const contactUs = async (req, res) => {
+const contactUs = asyncWrapper(async (req, res) => {
 	try {
 		const {
 			fullname,
@@ -26,7 +27,7 @@ const newContact = new Contact({
 	project_name,
 	project_desc,
 	department,
-	message, // Include the message field
+	message,
 });
 
 
@@ -36,50 +37,98 @@ const newContact = new Contact({
 		console.log(error);
 		return res.status(500).json({ error: "Internal Server Error" });
 	}
-};
+});
 
+// Quote Request
+const calc = asyncWrapper(async (req, res) => {
+	const buildingType = req.query.buildingType;
 
-const calcQuote = (req,res) => {
-	const buildingType = req.params.buildingType;
-
-	const apts = +req.query.apts;
-	const floors = +req.query.floors;
-	const tier = req.query.tier.toLowerCase();
-
-	if (!buildingType) {
+	if (buildingType !== "residential" && buildingType !== "commercial" && buildingType !== "industrial") {
 		return res.status(400).send(`Error: Invalid Building Type`);
 	}
 
+	const apts = +req.query.apts;
+	const floors = +req.query.floors;
+	console.log("apts:", apts);
+	console.log("floors:", floors);
+	const tier = req.query.tier.toLowerCase();
+	const occupancy = +req.query.occupancy;
+	const elevators = +req.query.elevators;
+	console.log("elevators", elevators);
+
 	if (!Object.keys(Data.unitPrices).includes(tier)) {
-		res.status(400);
-		res.send(`Error: invalid tier`);
+		res.status(400).send(`Error: Invalid tier`);
 		return;
 	}
 
 	if (isNaN(apts) || isNaN(floors)) {
-		res.status(400).send("Error: apts and floors must be specified as numbers");
+		res.status(400).send(`Error: apts and floors must be specified as numbers`);
 		return;
 	}
 
 	if (!Number.isInteger(floors) || !Number.isInteger(apts)) {
-		res.status(400);
-		res.send(`Error: apts and floors must be integers`);
+		res.status(400).send(`Error: apts and floors must be integers`);
 		return;
 	}
 
 	if (floors < 1 || apts < 1) {
-		res.status(400);
-		res.send(`apts and floors must be greater than zero`);
+		res.status(400).send(`apts and floors must be greater than zero`);
 		return;
 	}
 
 	const numElevators = calcResidentialElev(floors, apts);
 	const totalCost = calcInstallFee(numElevators, tier);
+
 	res.send({
 		elevators_required: numElevators,
 		cost: totalCost,
 	});
-};
+
+	if (buildingType == "industrial") {
+		if (!isNaN(elevators)) {
+			res.status(400).send("Error: elevators must be specified as a number");
+			return;
+		}
+
+		if (!Number.isInteger(elevators) || elevators < 1) {
+			res.status(400).send(`Error: elevators must be an integer greater than zero`);
+			return;
+		}
+
+		const numElevators = calcIndustrialElev(elevators);
+		const totalCost = calcInstallFee(numElevators, tier);
+		
+		res.send({
+			elevators_required: numElevators,
+			cost: totalCost,
+		});
+	}
+
+	if (buildingType == "commercial") {
+		if (!isNaN(floors) || !isNaN(occupancy)) {
+			res.status(400).send(`Error: Occupancy & Floors must be Numbers`);
+			return;
+		}
+
+		if (!Number.isInteger(floors) || !Number.isInteger(occupancy)) {
+			res.status(400).send(`Error: Occupancy & Floors must be Integers`);
+			return;
+		}
+
+		if (floors < 1 || occupancy < 1) {
+			res.status(400).send(`Error: Both floors and occupancy must be greater than zero.`);
+			return;
+		}
+
+		const numElevators = calcCommercialElev(floors, occupancy);
+		const totalCost = calcInstallFee(numElevators, tier);
+
+		res.send({
+		elevators_required: numElevators,
+		cost: totalCost,
+	});
+	}
+});
 
 const calcResidentialElev = (numFloors, numApts) => {
 	const elevatorsRequired =
@@ -101,4 +150,4 @@ const calcInstallFee = (numElvs, tier) => {
 	return total;
 };
 
-module.exports = { contactUs, calcQuote };
+module.exports = { contactUs, calc };
