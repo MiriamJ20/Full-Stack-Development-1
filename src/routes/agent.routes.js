@@ -5,7 +5,7 @@ const registerAgentRoutes = (app) => {
 
   app.get('/agents', AgentController.getAllAgents);
 
-  app.get('/agents-by-region', AgentController.getAgentsByRegion);
+  app.get("/agents-by-region", AgentController.getAgentsByRegion);
 
   app.post('/agent-update-info/:id', AgentController.updateAgentInfo);
 

@@ -28,4 +28,4 @@ regionRouter.registerRegionRoutes(app)
 MongoManager.openMongoConnection();
 app.listen(port, () => {
     console.log(`server is listening on port ${port}`)
-})
+});

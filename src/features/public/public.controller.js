@@ -47,51 +47,54 @@ const calc = asyncWrapper(async (req, res) => {
 		return res.status(400).send(`Error: Invalid Building Type`);
 	}
 
-	const apts = +req.query.apts;
-	const floors = +req.query.floors;
-	console.log("apts:", apts);
-	console.log("floors:", floors);
+	const apts = req.query.apts;
+	const floors = req.query.floors;
 	const tier = req.query.tier.toLowerCase();
-	const occupancy = +req.query.occupancy;
-	const elevators = +req.query.elevators;
-	console.log("elevators", elevators);
-
+	
 	if (!Object.keys(Data.unitPrices).includes(tier)) {
 		res.status(400).send(`Error: Invalid tier`);
 		return;
 	}
 
-	if (isNaN(apts) || isNaN(floors)) {
-		res.status(400).send(`Error: apts and floors must be specified as numbers`);
-		return;
+	if (buildingType == "residential") {
+		if (isNaN(apts) || isNaN(floors)) {
+			res.status(400).send(`Error: apts and floors must be specified as numbers`);
+			return;
+		}
+
+		// if (!Number.isInteger(floors) || !Number.isInteger(apts)) {
+		// 	res.status(400).send(`Error: apts and floors must be integers`);
+		// 	return;
+		// }
+
+		if (floors < 1 || apts < 1) {
+			res.status(400).send(`apts and floors must be greater than zero`);
+			return;
+		}
+
+		const numElevators = calcResidentialElev(floors, apts);
+		const totalCost = calcInstallFee(numElevators, tier);
+
+		res.send({
+			elevators_required: numElevators,
+			cost: totalCost,
+		});
 	}
-
-	if (!Number.isInteger(floors) || !Number.isInteger(apts)) {
-		res.status(400).send(`Error: apts and floors must be integers`);
-		return;
-	}
-
-	if (floors < 1 || apts < 1) {
-		res.status(400).send(`apts and floors must be greater than zero`);
-		return;
-	}
-
-	const numElevators = calcResidentialElev(floors, apts);
-	const totalCost = calcInstallFee(numElevators, tier);
-
-	res.send({
-		elevators_required: numElevators,
-		cost: totalCost,
-	});
-
 	if (buildingType == "industrial") {
-		if (!isNaN(elevators)) {
+		const elevators = req.query.elevators;
+
+		if (isNaN(elevators)) {
 			res.status(400).send("Error: elevators must be specified as a number");
 			return;
 		}
 
-		if (!Number.isInteger(elevators) || elevators < 1) {
-			res.status(400).send(`Error: elevators must be an integer greater than zero`);
+		// if (!Number.isInteger(elevators)) {
+		// 	res.status(400).send(`Error: elevators must be integers`);
+		// 	return;
+		// }
+
+		if (elevators < 1) {
+			res.status(400).send(`Error: elevators must be greater than zero`);
 			return;
 		}
 
@@ -105,15 +108,17 @@ const calc = asyncWrapper(async (req, res) => {
 	}
 
 	if (buildingType == "commercial") {
-		if (!isNaN(floors) || !isNaN(occupancy)) {
+		const occupancy = req.query.occupancy;
+		const floors = req.query.floors;
+		if (isNaN(floors) || isNaN(occupancy)) {
 			res.status(400).send(`Error: Occupancy & Floors must be Numbers`);
 			return;
 		}
 
-		if (!Number.isInteger(floors) || !Number.isInteger(occupancy)) {
-			res.status(400).send(`Error: Occupancy & Floors must be Integers`);
-			return;
-		}
+		// if (!Number.isInteger(floors) || !Number.isInteger(occupancy)) {
+		// 	res.status(400).send(`Error: Occupancy & Floors must be Integers`);
+		// 	return;
+		// }
 
 		if (floors < 1 || occupancy < 1) {
 			res.status(400).send(`Error: Both floors and occupancy must be greater than zero.`);

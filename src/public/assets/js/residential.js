@@ -3,10 +3,10 @@ let tableBody = "";
 let agentData = [];
 
 const updateTable = (region) => {
-	fetch(`${url}?region=${region}`)
+	fetch(`http://localhost:3004/agents`)
 		.then((response) => response.json())
 		.then((json) => {
-			let agentData = json.data;
+			const agentData = json.data;
 
 			agentData.sort((a, b) => b.rating - a.rating);
 
@@ -28,7 +28,7 @@ const updateTable = (region) => {
 					ratingColor = "purple";
 				}
 
-			tableBody += `<tr>
+				tableBody += `<tr>
           <td>${agent.first_name} ${agent.last_name}</td>
           <td style="color: ${ratingColor}">${agent.rating}%</td>
           <td>${formatter.format(agent.fee)}</td>
@@ -39,8 +39,11 @@ const updateTable = (region) => {
 			document.getElementById("agent").innerHTML = tableBody;
 		})
 		.catch((error) => {
-			console.error("Error fetching data:", error);
+			console.error(
+				`Error fetching data for region ${region}: ${error.message}`
+			);
 		});
+
 };
 
 const sortTable = (column) => {

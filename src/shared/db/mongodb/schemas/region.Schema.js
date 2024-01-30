@@ -13,7 +13,7 @@ const RegionSchema = new mongoose.Schema({
     },
     address: {
         type: String,
-        // trim: true,
+        trim: true,
         required: true
     },
     total_sales: { 
@@ -25,4 +25,4 @@ const RegionSchema = new mongoose.Schema({
 
 }, { timestamps: true })
 
-module.exports = mongoose.model('Region', RegionSchema)
+module.exports = mongoose.model('Region', RegionSchema);
