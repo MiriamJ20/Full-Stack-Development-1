@@ -141,6 +141,12 @@ const calcResidentialElev = (numFloors, numApts) => {
 	return elevatorsRequired;
 };
 
+const calcIndustrialElev = (elevators) => {
+	const elevatorsRequired =
+		Math.ceil(elevators);
+	return elevatorsRequired;
+};
+
 const calcCommercialElev = (numFloors, maxOccupancy) => {
 	const elevatorsRequired =
 		Math.ceil((maxOccupancy * numFloors) / 200) * Math.ceil(numFloors / 10);
