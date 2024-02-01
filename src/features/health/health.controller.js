@@ -8,7 +8,6 @@ const helloWorld = async(req, res) => {
 };
 
 const status = (req, res) => {
-  const envName = process.env.ENV_NAME;
   ResponseUtil.respondOk(
 		res,
 		null,

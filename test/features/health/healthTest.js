@@ -19,12 +19,8 @@ describe('HealthController',()=>{
     });
   });
 
-
   describe('#status()', () => {
     it('responds with Status OK', (done) => {
-      // const envName = process.ENV_NAME;
-      // process.env.ENV_NAME = envName;
-
       sinon.stub(ResponseUtil, 'respondOk').callsFake((res, data, message) => {
         chai.assert.equal(message, `Environment '${process.env.ENV_NAME}' running on port: ${process.env.PORT}`);
         done();
@@ -33,8 +29,6 @@ describe('HealthController',()=>{
       void HealthController.status();
     });
   });
-
-
 
   describe('#error()', () => {
     it('responds with respondBadRequest', (done) => {
