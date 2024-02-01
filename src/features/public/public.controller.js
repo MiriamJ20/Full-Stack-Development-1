@@ -1,7 +1,7 @@
 const Data = require('../../shared/resources/data');
 const asyncWrapper = require("../../shared/util/base-utils");
 const Contact = require("../../shared/db/mongodb/schemas/contact.schema");
-
+//  ContactUs Endpoint
 const contactUs = asyncWrapper(async (req, res) => {
 	try {
 		const {
@@ -15,21 +15,20 @@ const contactUs = asyncWrapper(async (req, res) => {
 			message,
 		} = req.body;
 		console.log(req.body);
-
+	// Check if all fields are filled
 		if (!fullname ||!email ||!phone ||!company_name ||!department ||!project_name ||!project_desc ||!message)
 			return res.status(400).json({ error: "Please fill all fields" });
-
-const newContact = new Contact({
-	fullname,
-	email,
-	phone,
-	company_name,
-	project_name,
-	project_desc,
-	department,
-	message,
-});
-
+	// Create a new contact object using the Contact schema
+		const newContact = new Contact({
+			fullname,
+			email,
+			phone,
+			company_name,
+			project_name,
+			project_desc,
+			department,
+			message,
+		});
 
 		await newContact.save();
 		res.status(201).json({ success: true, data: newContact });
@@ -39,7 +38,7 @@ const newContact = new Contact({
 	}
 });
 
-// Quote Request
+// Quote Request Endpoint
 const calc = asyncWrapper(async (req, res) => {
 	const buildingType = req.query.buildingType;
 
@@ -62,11 +61,6 @@ const calc = asyncWrapper(async (req, res) => {
 			return;
 		}
 
-		// if (!Number.isInteger(floors) || !Number.isInteger(apts)) {
-		// 	res.status(400).send(`Error: apts and floors must be integers`);
-		// 	return;
-		// }
-
 		if (floors < 1 || apts < 1) {
 			res.status(400).send(`apts and floors must be greater than zero`);
 			return;
@@ -87,11 +81,6 @@ const calc = asyncWrapper(async (req, res) => {
 			res.status(400).send("Error: elevators must be specified as a number");
 			return;
 		}
-
-		// if (!Number.isInteger(elevators)) {
-		// 	res.status(400).send(`Error: elevators must be integers`);
-		// 	return;
-		// }
 
 		if (elevators < 1) {
 			res.status(400).send(`Error: elevators must be greater than zero`);
@@ -114,11 +103,6 @@ const calc = asyncWrapper(async (req, res) => {
 			res.status(400).send(`Error: Occupancy & Floors must be Numbers`);
 			return;
 		}
-
-		// if (!Number.isInteger(floors) || !Number.isInteger(occupancy)) {
-		// 	res.status(400).send(`Error: Occupancy & Floors must be Integers`);
-		// 	return;
-		// }
 
 		if (floors < 1 || occupancy < 1) {
 			res.status(400).send(`Error: Both floors and occupancy must be greater than zero.`);

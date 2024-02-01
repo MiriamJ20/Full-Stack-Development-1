@@ -9,37 +9,45 @@ describe('HealthController',()=>{
     sinon.restore();
   });
 
-  describe('#helloWorld()',()=>{
-    it('respond with Hello World',(done)=>{
-      sinon.stub(ResponseUtil,'respondOk').callsFake((res,data,message)=>{
-        chai.assert.equal(message,'Hello World');
-        done();
-      });
-      void HealthController.helloWorld();
-    });
-  });
+  describe('#helloWorld()', () => {
+		// Test to ensure that the helloWorld function responds with 'Hello World'
+		it("respond with Hello World", (done) => {
+			sinon.stub(ResponseUtil, "respondOk").callsFake((res, data, message) => {
+				chai.assert.equal(message, "Hello World");
+				done();
+			});
+			// Call the helloWorld function
+			void HealthController.helloWorld();
+		});
+	});
 
   describe('#status()', () => {
-    it('responds with Status OK', (done) => {
-      sinon.stub(ResponseUtil, 'respondOk').callsFake((res, data, message) => {
-        chai.assert.equal(message, `Environment '${process.env.ENV_NAME}' running on port: ${process.env.PORT}`);
-        done();
-      });
-
-      void HealthController.status();
-    });
-  });
+		// Test to ensure that the status function responds with a status message
+		it("responds with Status OK", (done) => {
+			sinon.stub(ResponseUtil, "respondOk").callsFake((res, data, message) => {
+				chai.assert.equal(
+					message,
+					`Environment '${process.env.ENV_NAME}' running on port: ${process.env.PORT}`
+				);
+				done();
+			});
+			// Call the status function
+			void HealthController.status();
+		});
+	});
 
   describe('#error()', () => {
-    it('responds with respondBadRequest', (done) => {
-      const stubRes =  {status: sinon.stub()};
+		// Test to ensure that the error function responds with a 500 status code and an error message
+		it("responds with respondBadRequest", (done) => {
+			const stubRes = { status: sinon.stub() };
 			sinon.stub(ResponseUtil, "respondError").callsFake((res, data, errMessage) => {
-        chai.assert.equal(errMessage, 'error');
-        sinon.assert.calledWith(stubRes.status, 500)
+				chai.assert.equal(errMessage, "error");
+				// Ensure that the status function was called with the correct status code
+				sinon.assert.calledWith(stubRes.status, 500);
 			});
-      done();
-
+			done();
+      // Call the Error function
 			void HealthController.error();
 		});
-  });
+	});
 });
