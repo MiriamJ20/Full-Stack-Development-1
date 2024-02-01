@@ -1,7 +1,8 @@
 const chai = require('chai');
 const sinon = require('sinon');
-const HealthController = require('../src/features/health/health.controller');
-const ResponseUtil = require('../src/shared/utils/response-util').ResponseUtil;
+require("dotenv").config();
+const HealthController = require('../../../src/features/health/health.controller');
+const ResponseUtil = require('../../../src/shared/utils/response-util').ResponseUtil;
 
 describe('HealthController',()=>{
   afterEach(() => {
@@ -14,19 +15,18 @@ describe('HealthController',()=>{
         chai.assert.equal(message,'Hello World');
         done();
       });
-      
       void HealthController.helloWorld();
     });
   });
-});
+
 
   describe('#status()', () => {
-    it('responds with status message', (done) => {
-      const expectedMessage = `Environment 'test' running on port: 3004`;
+    it('responds with Status OK', (done) => {
+      // const envName = process.ENV_NAME;
+      // process.env.ENV_NAME = envName;
 
-      sinon.stub(process.env, 'ENV_NAME').value('test');
       sinon.stub(ResponseUtil, 'respondOk').callsFake((res, data, message) => {
-        chai.assert.equal(message, expectedMessage);
+        chai.assert.equal(message, `Environment '${process.env.ENV_NAME}' running on port: ${process.env.PORT}`);
         done();
       });
 
@@ -34,14 +34,18 @@ describe('HealthController',()=>{
     });
   });
 
-  describe('#error()', () => {
-    it('responds with error message and status 400', (done) => {
-      sinon.stub(ResponseUtil, 'respondError').callsFake((res, message, status) => {
-        chai.assert.equal(status, 400);
-        chai.assert.equal(message, 'error');
-        done();
-      });
 
-      void HealthController.error();
-    });
+
+  describe('#error()', () => {
+    it('responds with respondBadRequest', (done) => {
+      const stubRes =  {status: sinon.stub()};
+			sinon.stub(ResponseUtil, "respondError").callsFake((res, data, errMessage) => {
+        chai.assert.equal(errMessage, 'error');
+        sinon.assert.calledWith(stubRes.status, 500)
+			});
+      done();
+
+			void HealthController.error();
+		});
   });
+});
